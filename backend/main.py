@@ -1,7 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.config import settings
+from app.routes.health import router as health_router
 
-app = FastAPI(title="HireMind AI", version="1.0.0")
+app = FastAPI(
+    title=settings.app_name,
+    debug=settings.debug
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -11,6 +16,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(health_router, prefix="/api")
+
 @app.get("/")
-def health_check():
-    return {"status": "HireMind AI is running"}
+def root():
+    return {"message": f"Welcome to {settings.app_name}"}
