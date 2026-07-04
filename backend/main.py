@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.routes.health import router as health_router
+from app.routes.auth import router as auth_router
 from app.database import connect_db, close_db
 
 app = FastAPI(
@@ -26,6 +27,7 @@ async def shutdown():
     await close_db()
 
 app.include_router(health_router, prefix="/api")
+app.include_router(auth_router, prefix="/api/auth")
 
 @app.get("/")
 def root():
