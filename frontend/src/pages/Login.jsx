@@ -21,7 +21,7 @@ function Login() {
       const data = await loginUser(form)
       localStorage.setItem('token', data.access_token)
       localStorage.setItem('user', JSON.stringify(data.user))
-      alert('Login successful!')
+      window.location.href = '/dashboard'
     } catch (err) {
       setError(err.response?.data?.detail || 'Something went wrong')
     } finally {

@@ -22,7 +22,7 @@ function Register() {
       const data = await registerUser(form)
       localStorage.setItem('token', data.access_token)
       localStorage.setItem('user', JSON.stringify(data.user))
-      alert('Registered successfully!')
+      window.location.href = '/dashboard'
     } catch (err) {
       setError(err.response?.data?.detail || 'Something went wrong')
     } finally {
