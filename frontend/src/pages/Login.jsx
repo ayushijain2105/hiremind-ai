@@ -2,10 +2,7 @@ import { useState } from 'react'
 import { loginUser } from '../services/api'
 
 function Login() {
-  const [form, setForm] = useState({
-    email: '',
-    password: ''
-  })
+  const [form, setForm] = useState({ email: '', password: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
@@ -30,64 +27,121 @@ function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold text-center text-blue-600 mb-6">
-          Welcome Back
-        </h2>
-
-        {error && (
-          <div className="bg-red-100 text-red-600 p-3 rounded-lg mb-4 text-sm">
-            {error}
+    <div className="min-h-screen flex">
+      {/* Left Side */}
+      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 flex-col justify-between p-12">
+        <div>
+          <h1 className="text-white text-3xl font-bold">HireMind AI</h1>
+          <p className="text-blue-200 text-sm mt-1">Your AI-powered career companion</p>
+        </div>
+        <div>
+          <h2 className="text-white text-4xl font-bold leading-tight mb-6">
+            Land your dream job with AI-powered preparation
+          </h2>
+          <div className="space-y-4">
+            {[
+              { icon: '📄', text: 'Smart Resume Analysis' },
+              { icon: '🎯', text: 'ATS Score Optimization' },
+              { icon: '🎤', text: 'AI Mock Interviews' },
+              { icon: '📊', text: 'Personalized Feedback' },
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-3">
+                <span className="text-2xl">{item.icon}</span>
+                <span className="text-blue-100 font-medium">{item.text}</span>
+              </div>
+            ))}
           </div>
-        )}
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="flex -space-x-2">
+            {['A', 'B', 'C'].map((l, i) => (
+              <div key={i} className="w-8 h-8 rounded-full bg-blue-400 border-2 border-white flex items-center justify-center text-white text-xs font-bold">
+                {l}
+              </div>
+            ))}
+          </div>
+          <p className="text-blue-200 text-sm">Join 10,000+ students preparing smarter</p>
+        </div>
+      </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={form.email}
-              onChange={handleChange}
-              placeholder="john@gmail.com"
-              required
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+      {/* Right Side */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center px-8 py-12 bg-white">
+        <div className="w-full max-w-md">
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-gray-900">Welcome back</h2>
+            <p className="text-gray-500 mt-2">Sign in to continue your preparation</p>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Password
-            </label>
-            <input
-              type="password"
-              name="password"
-              value={form.password}
-              onChange={handleChange}
-              placeholder="••••••••"
-              required
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6 text-sm flex items-center gap-2">
+              <span>⚠️</span> {error}
+            </div>
+          )}
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50"
-          >
-            {loading ? 'Logging in...' : 'Login'}
-          </button>
-        </form>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Email address
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                placeholder="you@example.com"
+                required
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-gray-50"
+              />
+            </div>
 
-        <p className="text-center text-sm text-gray-500 mt-4">
-          Don't have an account?{' '}
-          <a href="/register" className="text-blue-600 font-medium hover:underline">
-            Register
-          </a>
-        </p>
+            <div>
+              <div className="flex justify-between mb-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Password
+                </label>
+                <a href="#" className="text-sm text-blue-600 hover:underline">
+                  Forgot password?
+                </a>
+              </div>
+              <input
+                type="password"
+                name="password"
+                value={form.password}
+                onChange={handleChange}
+                placeholder="••••••••"
+                required
+                className="w-full border border-gray-200 rounded-xl px-4 py-3 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-gray-50"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                  </svg>
+                  Signing in...
+                </span>
+              ) : 'Sign in'}
+            </button>
+          </form>
+
+          <p className="text-center text-sm text-gray-500 mt-6">
+            Don't have an account?{' '}
+            <a href="/register" className="text-blue-600 font-semibold hover:underline">
+              Create one free
+            </a>
+          </p>
+
+          <p className="text-center text-xs text-gray-400 mt-8">
+            By continuing, you agree to our Terms of Service and Privacy Policy
+          </p>
+        </div>
       </div>
     </div>
   )
