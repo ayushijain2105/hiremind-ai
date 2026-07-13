@@ -13,6 +13,7 @@ const features = [
     iconBg: 'bg-blue-50',
     iconColor: 'text-blue-600',
     btn: 'Analyze Resume',
+    link: '/upload-resume',
   },
   {
     icon: Target,
@@ -24,6 +25,7 @@ const features = [
     iconBg: 'bg-orange-50',
     iconColor: 'text-orange-500',
     btn: 'Check Score',
+    link: '/upload-resume',
   },
   {
     icon: Brain,
@@ -35,6 +37,7 @@ const features = [
     iconBg: 'bg-purple-50',
     iconColor: 'text-purple-600',
     btn: 'Analyze Skills',
+    link: '/upload-resume',
   },
   {
     icon: HelpCircle,
@@ -46,6 +49,7 @@ const features = [
     iconBg: 'bg-green-50',
     iconColor: 'text-green-600',
     btn: 'Generate Questions',
+    link: '/upload-resume',
   },
   {
     icon: Mic,
@@ -57,6 +61,7 @@ const features = [
     iconBg: 'bg-pink-50',
     iconColor: 'text-pink-600',
     btn: 'Start Interview',
+    link: '/upload-resume',
   },
   {
     icon: BarChart2,
@@ -68,6 +73,7 @@ const features = [
     iconBg: 'bg-indigo-50',
     iconColor: 'text-indigo-600',
     btn: 'View Feedback',
+    link: '/upload-resume',
   },
 ]
 
@@ -102,7 +108,6 @@ function Dashboard() {
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
 
-      {/* Main Content */}
       <div className="flex-1 ml-64">
         {/* Navbar */}
         <header className="sticky top-0 z-10 bg-white border-b border-gray-100 px-8 py-4 flex items-center justify-between">
@@ -160,9 +165,12 @@ function Dashboard() {
                   </span>
                 ))}
               </div>
-              <button className="bg-white text-blue-600 px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-blue-50 transition flex items-center gap-2">
+              <button
+                onClick={() => window.location.href = '/upload-resume'}
+                className="bg-white text-blue-600 px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-blue-50 transition flex items-center gap-2"
+              >
                 <FileText size={16} />
-                Upload Resume
+                Upload Resume →
               </button>
             </div>
           </div>
@@ -200,7 +208,7 @@ function Dashboard() {
             {features.map((feature, i) => (
               <div
                 key={i}
-                className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer group"
+                className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer"
               >
                 <div className="flex justify-between items-start mb-5">
                   <div className={`w-12 h-12 ${feature.iconBg} rounded-xl flex items-center justify-center`}>
@@ -212,7 +220,10 @@ function Dashboard() {
                 </div>
                 <h4 className="font-bold text-gray-900 text-base mb-2">{feature.title}</h4>
                 <p className="text-gray-500 text-sm leading-relaxed mb-5">{feature.desc}</p>
-                <button className={`w-full text-white py-2.5 rounded-xl text-sm font-semibold transition duration-200 ${feature.btnColor}`}>
+                <button
+                  onClick={() => window.location.href = feature.link}
+                  className={`w-full text-white py-2.5 rounded-xl text-sm font-semibold transition duration-200 ${feature.btnColor}`}
+                >
                   {feature.btn}
                 </button>
               </div>
