@@ -7,6 +7,8 @@ class Settings(BaseSettings):
     secret_key: str = "changethislater"
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
+    gemini_api_key: str = ""
+    groq_api_key: str = ""
 
     class Config:
         env_file = ".env"
