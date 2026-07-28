@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { uploadResume } from '../services/api'
+import { uploadResume, analyzeResume } from '../services/api'
 import { Upload, FileText, CheckCircle, AlertCircle, ArrowRight, Sparkles, Shield, Zap, Brain } from 'lucide-react'
 import Sidebar from '../components/Sidebar'
 
@@ -31,6 +31,7 @@ function UploadResume() {
     setError('')
     try {
       const data = await uploadResume(file)
+      await analyzeResume(data.resume_id)
       setResult(data)
     } catch (err) {
       setError(err.response?.data?.detail || 'Upload failed')
@@ -44,7 +45,6 @@ function UploadResume() {
       <Sidebar />
       <div className="flex-1 ml-64">
 
-        {/* Top Header */}
         <div className="bg-white border-b border-gray-100 px-8 py-5">
           <div className="max-w-3xl">
             <div className="flex items-center gap-2 mb-1">
@@ -58,7 +58,6 @@ function UploadResume() {
         <div className="px-8 py-8">
           <div className="max-w-3xl mx-auto">
 
-            {/* What happens next cards */}
             {!result && (
               <div className="grid grid-cols-3 gap-4 mb-8">
                 {[
@@ -79,7 +78,6 @@ function UploadResume() {
               </div>
             )}
 
-            {/* Upload Area */}
             {!result && (
               <>
                 <div
@@ -92,12 +90,11 @@ function UploadResume() {
                       : 'border-gray-200 bg-white hover:border-blue-400'
                   }`}
                 >
-                  {/* Loading overlay */}
                   {loading && (
                     <div className="absolute inset-0 bg-white/80 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center z-10">
                       <div className="w-12 h-12 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin mb-4"></div>
-                      <p className="text-sm font-semibold text-gray-900">Analyzing your resume...</p>
-                      <p className="text-xs text-gray-400 mt-1">This may take a few seconds</p>
+                      <p className="text-sm font-semibold text-gray-900">Analyzing your resume with AI...</p>
+                      <p className="text-xs text-gray-400 mt-1">This may take 10-15 seconds</p>
                     </div>
                   )}
 
@@ -111,15 +108,9 @@ function UploadResume() {
                       </div>
                     </div>
 
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">
-                      Drop your resume here
-                    </h3>
-                    <p className="text-gray-400 text-sm mb-1">
-                      Drag and drop your PDF file or click to browse
-                    </p>
-                    <p className="text-gray-300 text-xs mb-8">
-                      Supports PDF · Maximum file size 10MB
-                    </p>
+                    <h3 className="text-xl font-bold text-gray-900 mb-2">Drop your resume here</h3>
+                    <p className="text-gray-400 text-sm mb-1">Drag and drop your PDF file or click to browse</p>
+                    <p className="text-gray-300 text-xs mb-8">Supports PDF · Maximum file size 10MB</p>
 
                     <label className="cursor-pointer inline-block">
                       <span className="bg-blue-600 text-white px-8 py-3 rounded-xl text-sm font-semibold hover:bg-blue-700 transition shadow-sm shadow-blue-200">
@@ -148,7 +139,6 @@ function UploadResume() {
                   </div>
                 </div>
 
-                {/* Selected File */}
                 {file && (
                   <div className="mt-4 bg-white border border-blue-100 rounded-xl p-4 flex items-center gap-4 shadow-sm">
                     <div className="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -172,7 +162,6 @@ function UploadResume() {
                   </div>
                 )}
 
-                {/* Error */}
                 {error && (
                   <div className="mt-4 bg-red-50 border border-red-100 text-red-600 px-4 py-3 rounded-xl text-sm flex items-center gap-2">
                     <AlertCircle size={16} />
@@ -182,10 +171,8 @@ function UploadResume() {
               </>
             )}
 
-            {/* Success Result */}
             {result && (
               <div className="space-y-4">
-                {/* Success Banner */}
                 <div className="bg-green-50 border border-green-100 rounded-2xl p-5 flex items-center gap-4">
                   <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
                     <CheckCircle size={24} className="text-green-600" />
@@ -199,12 +186,11 @@ function UploadResume() {
                   </span>
                 </div>
 
-                {/* Stats */}
                 <div className="grid grid-cols-3 gap-4">
                   {[
-                    { label: 'Characters', value: result.text_length, color: 'text-blue-600', bg: 'bg-blue-50' },
-                    { label: 'Pages', value: '1+', color: 'text-purple-600', bg: 'bg-purple-50' },
-                    { label: 'Status', value: 'Ready', color: 'text-green-600', bg: 'bg-green-50' },
+                    { label: 'Characters', value: result.text_length, color: 'text-blue-600' },
+                    { label: 'Pages', value: '1+', color: 'text-purple-600' },
+                    { label: 'Status', value: 'Ready', color: 'text-green-600' },
                   ].map((stat, i) => (
                     <div key={i} className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm text-center">
                       <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
@@ -213,7 +199,6 @@ function UploadResume() {
                   ))}
                 </div>
 
-                {/* Preview */}
                 <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
                   <div className="flex items-center justify-between mb-3">
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Extracted Text Preview</p>
@@ -224,34 +209,11 @@ function UploadResume() {
                   </p>
                 </div>
 
-                {/* Next Steps */}
-                <div className="bg-white border border-gray-100 rounded-xl p-5 shadow-sm">
-                  <p className="text-sm font-bold text-gray-900 mb-4">What's next?</p>
-                  <div className="space-y-3">
-                    {[
-                      { step: '01', title: 'ATS Score Check', desc: 'See how your resume scores', color: 'text-orange-500', bg: 'bg-orange-50' },
-                      { step: '02', title: 'Skill Gap Analysis', desc: 'Find missing skills', color: 'text-purple-600', bg: 'bg-purple-50' },
-                      { step: '03', title: 'Mock Interview', desc: 'Practice with AI', color: 'text-blue-600', bg: 'bg-blue-50' },
-                    ].map((item, i) => (
-                      <div key={i} className="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 transition cursor-pointer">
-                        <div className={`w-8 h-8 ${item.bg} rounded-lg flex items-center justify-center flex-shrink-0`}>
-                          <span className={`text-xs font-bold ${item.color}`}>{item.step}</span>
-                        </div>
-                        <div className="flex-1">
-                          <p className="text-sm font-semibold text-gray-900">{item.title}</p>
-                          <p className="text-xs text-gray-400">{item.desc}</p>
-                        </div>
-                        <ArrowRight size={14} className="text-gray-300" />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
                 <button
-                  onClick={() => window.location.href = '/dashboard'}
+                  onClick={() => window.location.href = '/analysis'}
                   className="w-full bg-blue-600 text-white py-3.5 rounded-xl font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2 shadow-sm"
                 >
-                  Go to Dashboard <ArrowRight size={16} />
+                  View AI Analysis Results <ArrowRight size={16} />
                 </button>
               </div>
             )}

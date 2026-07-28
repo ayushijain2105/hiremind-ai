@@ -36,3 +36,12 @@ export const getMyResumes = async () => {
   const response = await API.get('/api/resume/my-resumes')
   return response.data
 }
+export const analyzeResume = async (resumeId) => {
+  const response = await API.post(`/api/analysis/analyze/${resumeId}`)
+  return response.data
+}
+
+export const getLatestAnalysis = async () => {
+  const response = await API.get('/api/analysis/latest')
+  return response.data
+}

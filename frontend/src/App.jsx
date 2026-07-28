@@ -3,6 +3,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import UploadResume from './pages/UploadResume'
+import AnalysisResult from './pages/AnalysisResult'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/upload-resume" element={<UploadResume />} />
+        <Route path="/analysis" element={<AnalysisResult />} />
       </Routes>
     </BrowserRouter>
   )
