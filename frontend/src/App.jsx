@@ -4,6 +4,7 @@ import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import UploadResume from './pages/UploadResume'
 import AnalysisResult from './pages/AnalysisResult'
+import InterviewQuestions from './pages/InterviewQuestions'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/upload-resume" element={<UploadResume />} />
         <Route path="/analysis" element={<AnalysisResult />} />
+        <Route path="/interview-questions" element={<InterviewQuestions />} />
       </Routes>
     </BrowserRouter>
   )

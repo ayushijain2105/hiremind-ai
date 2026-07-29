@@ -45,3 +45,7 @@ export const getLatestAnalysis = async () => {
   const response = await API.get('/api/analysis/latest')
   return response.data
 }
+export const generateQuestions = async () => {
+  const response = await API.get('/api/questions/generate')
+  return response.data
+}

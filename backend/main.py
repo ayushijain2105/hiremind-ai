@@ -5,7 +5,9 @@ from app.routes.health import router as health_router
 from app.routes.auth import router as auth_router
 from app.routes.resume import router as resume_router
 from app.routes.analysis import router as analysis_router
+from app.routes.questions import router as questions_router
 from app.database import connect_db, close_db
+
 
 app = FastAPI(
     title=settings.app_name,
@@ -32,6 +34,7 @@ app.include_router(health_router, prefix="/api")
 app.include_router(auth_router, prefix="/api/auth")
 app.include_router(resume_router, prefix="/api/resume")
 app.include_router(analysis_router, prefix="/api/analysis")
+app.include_router(questions_router, prefix="/api/questions")
 
 @app.get("/")
 def root():

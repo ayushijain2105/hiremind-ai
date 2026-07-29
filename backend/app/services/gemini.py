@@ -60,3 +60,38 @@ Return ONLY a valid JSON object with this exact structure (no extra text, no mar
         raise Exception(f"Failed to parse AI response as JSON: {str(e)}")
     except Exception as e:
         raise Exception(f"Groq API error: {str(e)}")
+async def generate_questions(resume_text: str) -> list:
+    prompt = f"""
+You are an expert technical interviewer.
+
+Based on this resume, generate 10 interview questions.
+
+Resume:
+{resume_text}
+
+Return ONLY a valid JSON array like this:
+[
+    {{"id": 1, "question": "...", "category": "Technical/HR/Behavioral", "difficulty": "Easy/Medium/Hard"}},
+    {{"id": 2, "question": "...", "category": "...", "difficulty": "..."}}
+]
+
+No extra text. Just the JSON array.
+"""
+    try:
+        response = await client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {"role": "system", "content": "Return only valid JSON array. No markdown."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.5,
+            max_tokens=2000,
+        )
+        raw = response.choices[0].message.content.strip()
+        if "```" in raw:
+            match = re.search(r"```(?:json)?\s*([\s\S]*?)```", raw)
+            if match:
+                raw = match.group(1).strip()
+        return json.loads(raw)
+    except Exception as e:
+        raise Exception(f"Questions generation failed: {str(e)}")
