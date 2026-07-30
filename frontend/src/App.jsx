@@ -5,6 +5,9 @@ import Dashboard from './pages/Dashboard'
 import UploadResume from './pages/UploadResume'
 import AnalysisResult from './pages/AnalysisResult'
 import InterviewQuestions from './pages/InterviewQuestions'
+import History from './pages/History'
+import MockInterview from './pages/MockInterview'
+import Analytics from './pages/Analytics'
 
 function App() {
   return (
@@ -17,6 +20,9 @@ function App() {
         <Route path="/upload-resume" element={<UploadResume />} />
         <Route path="/analysis" element={<AnalysisResult />} />
         <Route path="/interview-questions" element={<InterviewQuestions />} />
+        <Route path="/history" element={<History />} />
+        <Route path="/mock-interview" element={<MockInterview />} />
+        <Route path="/analytics" element={<Analytics />} />
       </Routes>
     </BrowserRouter>
   )

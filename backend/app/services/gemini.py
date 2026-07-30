@@ -95,3 +95,36 @@ No extra text. Just the JSON array.
         return json.loads(raw)
     except Exception as e:
         raise Exception(f"Questions generation failed: {str(e)}")
+
+async def evaluate_answer(question: str, answer: str, category: str) -> dict:
+    prompt = f"""
+You are an expert interviewer evaluating a candidate's answer.
+
+Question ({category}): {question}
+Candidate's Answer: {answer}
+
+Return ONLY a valid JSON object:
+{{
+    "score": <number 0-10>,
+    "feedback": "<2-3 sentence constructive feedback>",
+    "tip": "<1 sentence tip to improve this specific answer>"
+}}
+"""
+    try:
+        response = await client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {"role": "system", "content": "Return only valid JSON object. No markdown."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.4,
+            max_tokens=500,
+        )
+        raw = response.choices[0].message.content.strip()
+        if "```" in raw:
+            match = re.search(r"```(?:json)?\s*([\s\S]*?)```", raw)
+            if match:
+                raw = match.group(1).strip()
+        return json.loads(raw)
+    except Exception as e:
+        raise Exception(f"Answer evaluation failed: {str(e)}")

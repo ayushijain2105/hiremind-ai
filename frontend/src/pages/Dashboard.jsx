@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { FileText, Target, Brain, Mic, HelpCircle, BarChart2, Bell, Search, LogOut, TrendingUp } from 'lucide-react'
 import Sidebar from '../components/Sidebar'
+import { getAnalyticsSummary } from '../services/api'
 
 const features = [
   {
@@ -76,16 +77,14 @@ const features = [
     link: '/upload-resume',
   },
 ]
-
-const stats = [
-  { label: 'Resumes Analyzed', value: '0', icon: FileText, color: 'text-blue-600', bg: 'bg-blue-50' },
-  { label: 'Interviews Done', value: '0', icon: Mic, color: 'text-pink-600', bg: 'bg-pink-50' },
-  { label: 'ATS Score', value: 'N/A', icon: Target, color: 'text-orange-500', bg: 'bg-orange-50' },
-  { label: 'Skills Found', value: '0', icon: Brain, color: 'text-purple-600', bg: 'bg-purple-50' },
-]
-
 function Dashboard() {
   const [user, setUser] = useState(null)
+  const [stats, setStats] = useState([
+    { label: 'Resumes Analyzed', value: '0', icon: FileText, color: 'text-blue-600', bg: 'bg-blue-50' },
+    { label: 'Interviews Done', value: '0', icon: Mic, color: 'text-pink-600', bg: 'bg-pink-50' },
+    { label: 'ATS Score', value: 'N/A', icon: Target, color: 'text-orange-500', bg: 'bg-orange-50' },
+    { label: 'Skills Found', value: '0', icon: Brain, color: 'text-purple-600', bg: 'bg-purple-50' },
+  ])
 
   useEffect(() => {
     const userData = localStorage.getItem('user')
@@ -94,7 +93,22 @@ function Dashboard() {
       return
     }
     setUser(JSON.parse(userData))
+    loadStats()
   }, [])
+
+  const loadStats = async () => {
+    try {
+      const data = await getAnalyticsSummary()
+      setStats([
+        { label: 'Resumes Analyzed', value: data.resumes_analyzed, icon: FileText, color: 'text-blue-600', bg: 'bg-blue-50' },
+        { label: 'Interviews Done', value: data.interviews_done, icon: Mic, color: 'text-pink-600', bg: 'bg-pink-50' },
+        { label: 'ATS Score', value: data.latest_ats_score ?? 'N/A', icon: Target, color: 'text-orange-500', bg: 'bg-orange-50' },
+        { label: 'Skills Found', value: data.skills_found_count, icon: Brain, color: 'text-purple-600', bg: 'bg-purple-50' },
+      ])
+    } catch (err) {
+      // keep defaults if not enough data yet
+    }
+  }
 
   const handleLogout = () => {
     localStorage.removeItem('token')

@@ -53,6 +53,21 @@ async def analyze(
         "resume_id": resume_id,
         "analysis": analysis
     }
+@router.get("/history")
+async def get_analysis_history(user_id: str = Depends(get_current_user)):
+    db = get_db()
+
+    cursor = db.resumes.find(
+        {"user_id": user_id, "analysis": {"$exists": True}},
+        {"extracted_text": 0}
+    ).sort("_id", -1)
+
+    resumes = await cursor.to_list(100)
+
+    for resume in resumes:
+        resume["_id"] = str(resume["_id"])
+
+    return {"history": resumes}
 
 @router.get("/latest")
 async def get_latest_analysis(user_id: str = Depends(get_current_user)):
@@ -69,4 +84,4 @@ async def get_latest_analysis(user_id: str = Depends(get_current_user)):
     resume["_id"] = str(resume["_id"])
     resume.pop("extracted_text", None)
 
-    return resume
+    return resume 

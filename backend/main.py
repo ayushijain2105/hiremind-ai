@@ -6,6 +6,9 @@ from app.routes.auth import router as auth_router
 from app.routes.resume import router as resume_router
 from app.routes.analysis import router as analysis_router
 from app.routes.questions import router as questions_router
+from app.routes.interview import router as interview_router
+from app.routes.analytics import router as analytics_router
+from app.routes import ats_score
 from app.database import connect_db, close_db
 
 
@@ -35,6 +38,8 @@ app.include_router(auth_router, prefix="/api/auth")
 app.include_router(resume_router, prefix="/api/resume")
 app.include_router(analysis_router, prefix="/api/analysis")
 app.include_router(questions_router, prefix="/api/questions")
+app.include_router(interview_router, prefix="/api/interview")
+app.include_router(analytics_router, prefix="/api/analytics")
 
 @app.get("/")
 def root():

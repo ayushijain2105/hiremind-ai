@@ -1,3 +1,4 @@
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
   FileText,
@@ -11,18 +12,21 @@ import {
 } from "lucide-react";
 
 const navItems = [
-  { icon: LayoutDashboard, label: "Dashboard", active: true },
-  { icon: FileText, label: "Resume Analysis" },
-  { icon: Target, label: "ATS Score" },
-  { icon: Brain, label: "Skill Gap" },
-  { icon: HelpCircle, label: 'Interview Questions', link: '/interview-questions' },
-  { icon: Mic, label: "Mock Interview" },
-  { icon: BarChart2, label: "AI Feedback" },
-  { icon: History, label: "History" },
-  { icon: Settings, label: "Settings" },
+  { icon: LayoutDashboard, label: "Dashboard", link: "/dashboard" },
+  { icon: FileText, label: "Resume Analysis", link: "/analysis" },
+  { icon: Target, label: "ATS Score", link: "/analysis" },
+  { icon: Brain, label: "Skill Gap", link: "/analysis" },
+  { icon: HelpCircle, label: "Interview Questions", link: "/interview-questions" },
+  { icon: Mic, label: "Mock Interview", link: "/mock-interview" },
+ { icon: BarChart2, label: "AI Feedback", link: "/analytics" },
+  { icon: History, label: "History", link: "/history" },
+  { icon: Settings, label: "Settings", link: "/dashboard" },
 ];
 
 function Sidebar() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   return (
     <div className="fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-100 flex flex-col z-20 shadow-sm">
       {/* Logo */}
@@ -40,20 +44,23 @@ function Sidebar() {
 
       {/* Navigation */}
       <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-2">
-        {navItems.map((item, i) => (
-          <button
-            key={i}
-            onClick={() => item.link && navigate(item.link)}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
-              item.active
-                ? "bg-blue-50 text-blue-600"
-                : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-            }`}
-          >
-            <item.icon size={19} />
-            <span>{item.label}</span>
-          </button>
-        ))}
+        {navItems.map((item, i) => {
+          const active = location.pathname === item.link;
+          return (
+            <button
+              key={i}
+              onClick={() => item.link && navigate(item.link)}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 ${
+                active
+                  ? "bg-blue-50 text-blue-600"
+                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+              }`}
+            >
+              <item.icon size={19} />
+              <span>{item.label}</span>
+            </button>
+          );
+        })}
       </nav>
 
       {/* Bottom Profile */}
