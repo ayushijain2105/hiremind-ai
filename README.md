@@ -1,2 +1,2 @@
 # hiremind-ai
-project in continue
+project in progress ⏳
