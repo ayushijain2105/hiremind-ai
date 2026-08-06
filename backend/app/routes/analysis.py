@@ -69,6 +69,43 @@ async def get_analysis_history(user_id: str = Depends(get_current_user)):
 
     return {"history": resumes}
 
+@router.get("/result/{resume_id}")
+async def get_analysis_by_id(
+    resume_id: str,
+    user_id: str = Depends(get_current_user)
+):
+    db = get_db()
+
+    resume = await db.resumes.find_one({
+        "_id": ObjectId(resume_id),
+        "user_id": user_id,
+        "analysis": {"$exists": True}
+    })
+
+    if not resume:
+        raise HTTPException(status_code=404, detail="Analysis not found")
+
+    resume["_id"] = str(resume["_id"])
+    resume.pop("extracted_text", None)
+
+    return resume
+@router.delete("/{resume_id}")
+async def delete_analysis(
+    resume_id: str,
+    user_id: str = Depends(get_current_user)
+):
+    db = get_db()
+    result = await db.resumes.delete_one({"_id": ObjectId(resume_id), "user_id": user_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Analysis not found")
+    return {"message": "Deleted successfully"}
+
+@router.delete("/history/all")
+async def delete_all_history(user_id: str = Depends(get_current_user)):
+    db = get_db()
+    await db.resumes.delete_many({"user_id": user_id})
+    return {"message": "All history cleared"}
+
 @router.get("/latest")
 async def get_latest_analysis(user_id: str = Depends(get_current_user)):
     db = get_db()

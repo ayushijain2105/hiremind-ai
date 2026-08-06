@@ -1,10 +1,22 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from app.models.user import UserRegister, UserLogin, TokenResponse, UserResponse
 from app.utils.auth import hash_password, verify_password, create_access_token
 from app.database import get_db
 from bson import ObjectId
+from pydantic import BaseModel
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from app.utils.auth import decode_token
+
 
 router = APIRouter()
+security = HTTPBearer()
+
+def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    token = credentials.credentials
+    payload = decode_token(token)
+    if not payload:
+        raise HTTPException(status_code=401, detail="Invalid token")
+    return payload["sub"]
 
 @router.post("/register", response_model=TokenResponse)
 async def register(user: UserRegister):
@@ -62,3 +74,41 @@ async def login(credentials: UserLogin):
             email=user["email"]
         )
     )
+class UpdateProfileRequest(BaseModel):
+    name: str
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+
+@router.put("/profile")
+async def update_profile(
+    payload: UpdateProfileRequest,
+    user_id: str = Depends(get_current_user)
+):
+    db = get_db()
+    await db.users.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$set": {"name": payload.name}}
+    )
+    user = await db.users.find_one({"_id": ObjectId(user_id)})
+    return {"id": str(user["_id"]), "name": user["name"], "email": user["email"]}
+
+@router.put("/change-password")
+async def change_password(
+    payload: ChangePasswordRequest,
+    user_id: str = Depends(get_current_user)
+):
+    db = get_db()
+    user = await db.users.find_one({"_id": ObjectId(user_id)})
+    if not user or not verify_password(payload.current_password, user["password"]):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+    if len(payload.new_password) < 8:
+        raise HTTPException(status_code=400, detail="New password must be at least 8 characters")
+
+    hashed = hash_password(payload.new_password)
+    await db.users.update_one(
+        {"_id": ObjectId(user_id)},
+        {"$set": {"password": hashed}}
+    )
+    return {"message": "Password changed successfully"}

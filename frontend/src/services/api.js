@@ -76,3 +76,29 @@ export const getAnalyticsSummary = async () => {
   const response = await API.get('/api/analytics/summary')
   return response.data
 }
+export const getAnalysisById = async (resumeId) => {
+  const response = await API.get(`/api/analysis/result/${resumeId}`)
+  return response.data
+}
+export const updateProfile = async (name) => {
+  const response = await API.put('/api/auth/profile', { name })
+  return response.data
+}
+
+export const changePassword = async (currentPassword, newPassword) => {
+  const response = await API.put('/api/auth/change-password', {
+    current_password: currentPassword,
+    new_password: newPassword
+  })
+  return response.data
+}
+
+export const deleteAnalysis = async (resumeId) => {
+  const response = await API.delete(`/api/analysis/${resumeId}`)
+  return response.data
+}
+
+export const deleteAllHistory = async () => {
+  const response = await API.delete('/api/analysis/history/all')
+  return response.data
+}
