@@ -62,17 +62,28 @@ Return ONLY a valid JSON object with this exact structure (no extra text, no mar
         raise Exception(f"Groq API error: {str(e)}")
 async def generate_questions(resume_text: str) -> list:
     prompt = f"""
-You are an expert technical interviewer.
+You are an expert technical interviewer and career coach creating a complete interview preparation guide.
 
-Based on this resume, generate 10 interview questions.
+Based on this resume, generate 8 interview questions with full preparation material for each.
 
 Resume:
 {resume_text}
 
 Return ONLY a valid JSON array like this:
 [
-    {{"id": 1, "question": "...", "category": "Technical/HR/Behavioral", "difficulty": "Easy/Medium/Hard"}},
-    {{"id": 2, "question": "...", "category": "...", "difficulty": "..."}}
+    {{
+        "id": 1,
+        "question": "...",
+        "category": "Technical/HR/Behavioral",
+        "difficulty": "Easy/Medium/Hard",
+        "ideal_answer": "<a strong sample answer, 3-5 sentences>",
+        "interviewer_expectation": "<1-2 sentences on what the interviewer is really evaluating>",
+        "explanation": "<2-3 sentences explaining the concept or context behind the question>",
+        "key_points": ["<point 1>", "<point 2>", "<point 3>"],
+        "common_mistakes": ["<mistake 1>", "<mistake 2>"],
+        "follow_up_questions": ["<follow-up 1>", "<follow-up 2>"],
+        "related_concepts": ["<concept 1>", "<concept 2>"]
+    }}
 ]
 
 No extra text. Just the JSON array.
@@ -85,7 +96,7 @@ No extra text. Just the JSON array.
                 {"role": "user", "content": prompt}
             ],
             temperature=0.5,
-            max_tokens=2000,
+            max_tokens=4000,
         )
         raw = response.choices[0].message.content.strip()
         if "```" in raw:

@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
 import { generateQuestions } from '../services/api'
 import Layout from '../components/Layout'
-import { Brain, RefreshCw, ChevronDown, ChevronUp } from 'lucide-react'
+import {
+  Brain, RefreshCw, ChevronDown, ChevronUp, CheckCircle,
+  AlertTriangle, MessageSquare, Lightbulb, Target, Layers
+} from 'lucide-react'
 
 const difficultyColor = {
   Easy: 'bg-green-50 dark:bg-green-500/10 text-green-700 dark:text-green-400',
@@ -13,6 +16,18 @@ const categoryColor = {
   Technical: 'bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400',
   HR: 'bg-purple-50 dark:bg-purple-500/10 text-purple-700 dark:text-purple-400',
   Behavioral: 'bg-orange-50 dark:bg-orange-500/10 text-orange-700 dark:text-orange-400',
+}
+
+function Section({ icon: Icon, title, children, color }) {
+  return (
+    <div className="mt-4">
+      <div className="flex items-center gap-1.5 mb-2">
+        <Icon size={13} className={color} />
+        <p className={`text-xs font-semibold ${color}`}>{title}</p>
+      </div>
+      {children}
+    </div>
+  )
 }
 
 function QuestionCard({ q }) {
@@ -39,10 +54,75 @@ function QuestionCard({ q }) {
           {q.difficulty}
         </span>
       </div>
+
       {open && (
-        <div className="mt-4 ml-10 p-4 bg-blue-50 dark:bg-blue-500/10 rounded-xl">
-          <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-1">💡 Tip</p>
-          <p className="text-sm text-blue-800 dark:text-blue-300">Think about a specific example from your projects or experience before answering this question.</p>
+        <div className="mt-4 ml-10 pl-4 border-l-2 border-gray-100 dark:border-border-dark">
+
+          {q.interviewer_expectation && (
+            <Section icon={Target} title="What the interviewer expects" color="text-indigo-600 dark:text-indigo-400">
+              <p className="text-sm text-gray-600 dark:text-gray-300">{q.interviewer_expectation}</p>
+            </Section>
+          )}
+
+          {q.explanation && (
+            <Section icon={Brain} title="Explanation" color="text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-gray-600 dark:text-gray-300">{q.explanation}</p>
+            </Section>
+          )}
+
+          {q.ideal_answer && (
+            <Section icon={CheckCircle} title="Sample answer" color="text-green-600 dark:text-green-400">
+              <p className="text-sm text-gray-700 dark:text-gray-300 bg-green-50 dark:bg-green-500/10 p-3 rounded-lg">{q.ideal_answer}</p>
+            </Section>
+          )}
+
+          {q.key_points?.length > 0 && (
+            <Section icon={Layers} title="Key points to mention" color="text-blue-600 dark:text-blue-400">
+              <ul className="space-y-1">
+                {q.key_points.map((p, i) => (
+                  <li key={i} className="text-sm text-gray-600 dark:text-gray-300 flex items-start gap-2">
+                    <span className="text-blue-400 mt-1">•</span> {p}
+                  </li>
+                ))}
+              </ul>
+            </Section>
+          )}
+
+          {q.common_mistakes?.length > 0 && (
+            <Section icon={AlertTriangle} title="Common mistakes to avoid" color="text-red-500">
+              <ul className="space-y-1">
+                {q.common_mistakes.map((m, i) => (
+                  <li key={i} className="text-sm text-gray-600 dark:text-gray-300 flex items-start gap-2">
+                    <span className="text-red-400 mt-1">•</span> {m}
+                  </li>
+                ))}
+              </ul>
+            </Section>
+          )}
+
+          {q.follow_up_questions?.length > 0 && (
+            <Section icon={MessageSquare} title="Possible follow-up questions" color="text-purple-600 dark:text-purple-400">
+              <ul className="space-y-1">
+                {q.follow_up_questions.map((f, i) => (
+                  <li key={i} className="text-sm text-gray-600 dark:text-gray-300 flex items-start gap-2">
+                    <span className="text-purple-400 mt-1">•</span> {f}
+                  </li>
+                ))}
+              </ul>
+            </Section>
+          )}
+
+          {q.related_concepts?.length > 0 && (
+            <Section icon={Lightbulb} title="Related concepts" color="text-yellow-600 dark:text-yellow-400">
+              <div className="flex flex-wrap gap-2">
+                {q.related_concepts.map((c, i) => (
+                  <span key={i} className="text-xs bg-yellow-50 dark:bg-yellow-500/10 text-yellow-700 dark:text-yellow-400 px-2.5 py-1 rounded-full font-medium">
+                    {c}
+                  </span>
+                ))}
+              </div>
+            </Section>
+          )}
         </div>
       )}
     </div>
@@ -77,11 +157,10 @@ function InterviewQuestions() {
 
   return (
     <Layout>
-      {/* Header */}
       <div className="bg-white dark:bg-panel-dark border-b border-gray-100 dark:border-border-dark px-8 py-5 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Interview Questions</h1>
-          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">AI-generated questions based on your resume</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Interview Preparation</h1>
+          <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Complete prep guide — sample answers, key points, and follow-ups for each question</p>
         </div>
         <button
           onClick={fetchQuestions}
@@ -95,16 +174,14 @@ function InterviewQuestions() {
 
       <div className="px-8 py-8 max-w-3xl">
 
-        {/* Loading */}
         {loading && (
           <div className="flex flex-col items-center justify-center py-24">
             <div className="w-14 h-14 border-4 border-blue-100 dark:border-blue-500/20 border-t-blue-600 rounded-full animate-spin mb-4"></div>
-            <p className="text-gray-700 dark:text-gray-300 font-semibold">Generating your questions...</p>
+            <p className="text-gray-700 dark:text-gray-300 font-semibold">Building your prep guide...</p>
             <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">AI is reading your resume</p>
           </div>
         )}
 
-        {/* Error */}
         {!loading && error && (
           <div className="text-center py-24">
             <Brain size={48} className="text-gray-300 dark:text-gray-600 mx-auto mb-4" />
@@ -118,10 +195,8 @@ function InterviewQuestions() {
           </div>
         )}
 
-        {/* Questions */}
         {!loading && !error && questions.length > 0 && (
           <>
-            {/* Stats */}
             <div className="grid grid-cols-3 gap-4 mb-8">
               <div className="bg-white dark:bg-panel-dark border border-gray-100 dark:border-border-dark rounded-xl p-4 shadow-sm text-center">
                 <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{questions.length}</p>
@@ -139,7 +214,6 @@ function InterviewQuestions() {
               </div>
             </div>
 
-            {/* Category filters */}
             <div className="flex items-center gap-2 mb-6 flex-wrap">
               <span className="text-xs font-semibold text-gray-400 dark:text-gray-500">Filter:</span>
               {categories.map((cat, i) => (
@@ -149,19 +223,17 @@ function InterviewQuestions() {
               ))}
             </div>
 
-            {/* Question List */}
             <div className="space-y-3">
               {questions.map((q, i) => (
                 <QuestionCard key={i} q={q} />
               ))}
             </div>
 
-            {/* Bottom CTA */}
             <div className="mt-8 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl p-6 text-white text-center">
               <h3 className="font-bold text-lg mb-2">Ready to practice?</h3>
               <p className="text-blue-100 text-sm mb-4">Start a mock interview with our AI interviewer</p>
               <button
-                onClick={() => window.location.href = '/dashboard'}
+                onClick={() => window.location.href = '/mock-interview'}
                 className="bg-white text-blue-600 px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-blue-50 transition"
               >
                 Start Mock Interview →
